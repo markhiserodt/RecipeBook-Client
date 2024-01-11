@@ -1,0 +1,57 @@
+<div class="d-flex m-3">
+  <div style="width: 18em;">
+    <label for="foodGroupName" class="form-label">Food Group Name</label>
+    <input [(ngModel)]="foodGroupName" class="form-control" id="foodGroupName" type="text" placeholder="Grains, Dairy, Poultry ...">
+  </div>
+
+  <div class="d-flex align-items-end ms-3">
+    <button class="btn btn-primary" (click)="addFoodGroup(foodGroupName)">Add Food Group</button>
+  </div>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Name</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (foodGroup of foodGroups(); let index = $index; track foodGroup.id) {
+      <tr>
+        <th scope="row">{{foodGroup.id}}</th>
+        <td scope="row">{{foodGroup.name}}</td>
+        <td scope="row" class="d-flex">
+          <button (click)="editFoodGroup(foodGroup)" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editFoodGroupModal">
+            Edit
+          </button>
+          <button class="btn btn-danger ms-3" (click)="deleteFoodGroup(foodGroup.id, index)">Delete</button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<div class="modal fade" id="editFoodGroupModal" tabindex="-1" aria-labelledby="editFoodGroupModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editFoodGroupModal">Edit Food Group</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      @if (foodGroupEdit) {
+        <div class="modal-body">
+          <div style="width: 18em;">
+            <label for="foodGroupNameEdit" class="form-label">Food Group Name</label>
+            <input [(ngModel)]="foodGroupEdit.name" class="form-control" id="foodGroupNameEdit" type="text" value="{{foodGroupEdit.name}}">
+          </div>
+        </div>
+      }
+      <div class="modal-footer">
+        <button #closeEditFoodGroupModalButton type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button (click)="updateFoodGroup(foodGroupEdit!)" type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

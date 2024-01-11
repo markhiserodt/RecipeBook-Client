@@ -1,0 +1,127 @@
+<h2>Recipes</h2>
+
+<div class="d-flex m-3">
+  <div style="width: 18em;">
+    <label for="recipeName" class="form-label">Recipe</label>
+    <input [(ngModel)]="recipeName" class="form-control" id="recipeName" type="text" placeholder="Soup, Curry, Spaghetti ...">
+  </div>
+
+  <div class="d-flex align-items-end ms-3">
+    <div class="dropdown">
+      <a class="btn btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Ingredients
+      </a>
+    
+      <ul class="dropdown-menu">
+        @for (food of foods(); track $index) {
+          <li class="dropdown-item">
+            <div class="form-check">
+              <input (change)="selectFood(food)" class="form-check-input" type="checkbox" id="foodCheckbox">
+              <label class="form-check-label" for="foodCheckbox">
+                {{food.name}}
+              </label>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-end ms-3">
+    <button class="btn btn-primary" (click)="addRecipe()">Add Recipe</button>
+  </div>
+
+  <div class="d-flex align-items-end ms-3">
+    @for (food of selectedFoods; track $index; let last = $last;) {
+      <label class="fs-6">{{food.name}}</label>
+      @if (!last) {
+        <label class="fs-6">,&nbsp;</label>
+      }
+    }
+  </div>
+
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Name</th>
+      <th scope="col">Ingredients</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (recipe of recipes(); let index = $index; track recipe.id) {
+      <tr>
+        <th scope="row">{{recipe.id}}</th>
+        <td scope="row">{{recipe.name}}</td>
+        <td scope="row">
+          @for (food of recipe.foods; track $index; let last = $last;) {
+            <label class="fs-6">{{food.name}}</label>
+            @if (!last) {
+              <label class="fs-6">,&nbsp;</label>
+            }
+          }
+        </td>
+        <td scope="row" class="d-flex">
+          <button (click)="editRecipe(recipe)" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editRecipeModal">
+            Edit
+          </button>
+          <button class="btn btn-danger ms-3" (click)="deleteRecipe(recipe.id, index)">Delete</button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    @if (recipeEdit) {
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editRecipeModal">Edit Recipe</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div style="width: 18em;">
+          <label for="foodNameEdit" class="form-label">Recipe</label>
+          <input [(ngModel)]="recipeEdit.name" class="form-control" id="foodNameEdit" type="text" value="{{recipeEdit.name}}">
+        </div>
+        <div class="mt-3">
+          <div class="dropdown">
+            <a class="btn btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Ingredients
+            </a>
+          
+            <ul class="dropdown-menu">
+              @for (food of foods(); track $index) {
+                <li class="dropdown-item">
+                  <div class="form-check">
+                    <input (change)="editFood(food)" class="form-check-input" [checked]="isEditFoodSelected(food)" type="checkbox" id="foodCheckbox">
+                    <label class="form-check-label" for="foodCheckbox">
+                      {{food.name}}
+                    </label>
+                  </div>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+        <div class="mt-3">
+          @for (food of recipeEdit.foods; track $index; let last = $last;) {
+            <label class="fs-6">{{food.name}}</label>
+            @if (!last) {
+              <label class="fs-6">,&nbsp;</label>
+            }
+          }
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button #closeEditRecipeModalButton type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button (click)="updateRecipe(recipeEdit)" type="button" class="btn btn-primary">Save</button>
+      </div>
+    }
+    </div>
+  </div>
+</div>

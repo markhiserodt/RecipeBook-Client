@@ -1,0 +1,76 @@
+<div class="d-flex m-3">
+  <div style="width: 18em;">
+    <label for="foodName" class="form-label">Ingredient</label>
+    <input [(ngModel)]="foodName" class="form-control" id="foodName" type="text" placeholder="Bread, Milk, Eggs ...">
+  </div>
+
+  <div class="ms-3" style="width: 24em;">
+    <label for="foodName" class="form-label">Food Group</label>
+    <select [(ngModel)]="foodGroupId" class="form-select">
+      @for (foodGroup of foodGroups(); track $index) {
+        <option value="{{foodGroup.id}}">{{foodGroup.name}}</option>
+      }
+    </select>
+  </div>
+
+  <div class="d-flex align-items-end ms-3">
+    <button class="btn btn-primary" (click)="addFood(foodName, foodGroupId)">Add Ingredient</button>
+  </div>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Name</th>
+      <th scope="col">Food Group</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (food of foods(); let index = $index; track food.id) {
+      <tr>
+        <th scope="row">{{food.id}}</th>
+        <td scope="row">{{food.name}}</td>
+        <td scope="row">{{food.food_group.name}}</td>
+        <td scope="row" class="d-flex">
+          <button (click)="editFood(food)" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editFoodModal">
+            Edit
+          </button>
+          <button class="btn btn-danger ms-3" (click)="deleteFood(food.id, index)">Delete</button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<div class="modal fade" id="editFoodModal" tabindex="-1" aria-labelledby="editFoodModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      @if (foodEdit) {
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="editFoodModal">Edit Ingredient</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div style="width: 18em;">
+            <label for="foodNameEdit" class="form-label">Ingredient</label>
+            <input [(ngModel)]="foodEdit.name" class="form-control" id="foodNameEdit" type="text" value="{{foodEdit.name}}">
+          </div>
+          <div class="mt-3" style="width: 24em;">
+            <label for="foodName" class="form-label">Food Group</label>
+            <select [(ngModel)]="foodEdit.food_group.id" class="form-select">
+              @for (foodGroup of foodGroups(); track $index) {
+                <option value="{{foodGroup.id}}">{{foodGroup.name}}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button #closeEditFoodModalButton type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button (click)="updateFood(foodEdit)" type="button" class="btn btn-primary">Save</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
